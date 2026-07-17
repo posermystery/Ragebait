@@ -34,6 +34,14 @@ public class BackgroundMusic : MonoBehaviour
             {
                 // Agar alag hai (jaise Menu se Level 1 gaye), toh naya gaana change karke play karo!
                 instance.audioSource.clip = this.sceneMusic;
+                
+                // BUG FIX: Naye scene ke BGM_Manager me jo volume set hai, usko purane wale pe copy karo
+                AudioSource newAudioSource = GetComponent<AudioSource>();
+                if (newAudioSource != null)
+                {
+                    instance.audioSource.volume = newAudioSource.volume;
+                }
+
                 instance.audioSource.Play();
             }
             // Agar gaana SAME hai (jaise player mar ke wapas usi level me zinda hua), toh kuch mat karo, gaana purana wala hi bina ruke chalta rahega!

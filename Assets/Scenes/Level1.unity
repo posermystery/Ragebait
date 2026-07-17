@@ -150,7 +150,7 @@ AudioSource:
   m_audioClip: {fileID: 0}
   m_Resource: {fileID: 0}
   m_PlayOnAwake: 1
-  m_Volume: 1
+  m_Volume: 0.204
   m_Pitch: 1
   Loop: 1
   Mute: 0
@@ -1319,6 +1319,7 @@ MonoBehaviour:
   isOrbiting: 0
   currentOrbit: {fileID: 0}
   jumpSound: {fileID: 8300000, guid: 78942aaea3ed27a429546b92eb0a0c4f, type: 3}
+  jumpVolume: 0.3
   reverseSound: {fileID: 8300000, guid: f6430bf331d754d4080939f059fe6038, type: 3}
 --- !u!96 &1688814811
 TrailRenderer:

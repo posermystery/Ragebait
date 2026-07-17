@@ -6,6 +6,8 @@ TagManager:
   tags:
   - Orbit
   - GoldenOrbit
+  - SafePipe
+  - DeathGap
   layers:
   - Default
   - TransparentFX

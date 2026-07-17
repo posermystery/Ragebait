@@ -129,7 +129,57 @@ public class GameManager : MonoBehaviour
         "You're the reason the tutorial exists.",
         "Did you learn to play from a pigeon?",
         "I'm not saying you're bad, but the math says you're terrible.",
-        "Your talent is successfully hidden."
+        "Your talent is successfully hidden.",
+        "Were you trying to die, or does it just come naturally?",
+        "My dog could play better, and he doesn't have thumbs.",
+        "Your gaming license has been officially revoked.",
+        "Imagine showing this gameplay to your future kids.",
+        "I've seen plants with better reaction times.",
+        "Did you drop your phone, or are you just like this?",
+        "Bro, even the NPCs are feeling second-hand embarrassment.",
+        "I would roast you, but your gameplay is doing it for me.",
+        "Is there a gas leak in your house? You play like you're dizzy.",
+        "You're built different. Built incorrectly, but different.",
+        "This is a tragedy, not a playthrough.",
+        "You move like a shopping cart with a broken wheel.",
+        "Are you legally blind, or just ignoring the screen?",
+        "I didn't know it was physically possible to be this bad.",
+        "If you were a character, your stats would be in the negatives.",
+        "You died so fast the game didn't even have time to load the insult.",
+        "Bro is fighting demons, and the demons are winning.",
+        "I'm billing you for the brain cells I lost watching that.",
+        "You play like your screen is turned off.",
+        "Is someone else holding the phone? Please say yes.",
+        "You're the reason they put 'Do not drink' on bleach.",
+        "I’ve seen better decision making in horror movies.",
+        "Are you speedrunning failures?",
+        "You have the survival instincts of a lemming.",
+        "Bro, just put the fries in the bag.",
+        "Your brain is on battery saver mode.",
+        "I've seen better pathfinding in Windows 95.",
+        "You're the type of guy to drown in a puddle.",
+        "Even autocorrect can't fix your mistakes.",
+        "Stop. Get some help.",
+        "You're the gaming equivalent of a participation trophy.",
+        "I bet you fail CAPTCHAs on the regular.",
+        "Did you think the obstacle was a collectible?",
+        "You play like you're wearing boxing gloves.",
+        "Are you allergic to making progress?",
+        "You’re playing 4D chess, but everyone else is playing the actual game.",
+        "I hope you kept the receipt for your phone.",
+        "Your gameplay is making the game engine cry.",
+        "Bro's ping is higher than his IQ.",
+        "This is a safe space... to laugh at your gameplay.",
+        "You have the reflexes of a dial-up connection.",
+        "I've seen better reflexes on a sloth on sleeping pills.",
+        "You're so bad, I'm actually taking notes on what NOT to do.",
+        "Bro thought he was the main character.",
+        "Your skills are like a mirage. They don't exist.",
+        "I’m starting a GoFundMe for your thumbs.",
+        "If stupidity was a currency, you'd be a billionaire.",
+        "Bro is literally a walking 'L'.",
+        "Even the bugs in this code perform better than you.",
+        "You're the reason we have tutorial levels that take 20 minutes."
     };
 
     private void Awake()
@@ -237,7 +287,23 @@ public class GameManager : MonoBehaviour
         {
             gameOverPanel.SetActive(true);
             reasonText.text = "LEVEL PASSED.";
-            rageMessageText.text = "Wow, you beat the easiest level in gaming history. Do you want a medal for basic competence?\n\n(Tap to embarrass yourself in the next level...)";
+            
+            if (currentLevelNumber == 1)
+            {
+                rageMessageText.text = "Wow, you beat the easiest level in gaming history. Do you want a medal for basic competence?\n\n(Tap to embarrass yourself in the next level...)";
+            }
+            else if (currentLevelNumber == 2)
+            {
+                rageMessageText.text = "You finally figured out the trick? Took you long enough. Go touch grass before Level 3 breaks you.\n\n(Tap to suffer...)";
+            }
+            else if (currentLevelNumber == 3)
+            {
+                rageMessageText.text = "You figured out you just had to walk backwards? Congrats, you have basic common sense. I bet you still fell for the fake gate at least 10 times though.\n\n(Tap to suffer...)";
+            }
+            else
+            {
+                rageMessageText.text = "You beat Level " + currentLevelNumber + ". Still doesn't change the fact that you're terrible at this game.\n\n(Tap to continue...)";
+            }
         }
     }
 

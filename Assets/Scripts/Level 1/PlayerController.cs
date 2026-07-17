@@ -25,6 +25,7 @@ public class PlayerController : MonoBehaviour
 
     [Header("Audio")]
     public AudioClip jumpSound;
+    [Range(0f, 1f)] public float jumpVolume = 0.1f; // Jump sound volume control
     public AudioClip reverseSound;
     private AudioSource audioSource;
 
@@ -179,7 +180,7 @@ public class PlayerController : MonoBehaviour
         // Apply velocity to the Rigidbody
         rb.linearVelocity = jumpDir * jumpSpeed;
         
-        if (jumpSound != null) audioSource.PlayOneShot(jumpSound);
+        if (jumpSound != null) audioSource.PlayOneShot(jumpSound, jumpVolume);
     }
 
     private void OnTriggerEnter2D(Collider2D collision)
