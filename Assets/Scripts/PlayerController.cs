@@ -11,6 +11,9 @@ public class PlayerController : MonoBehaviour
     [Header("Orbit Entry Settings")]
     public float spiralSpeed = 5f; // How fast it corrects its orbit to the perfect edge
 
+    [Header("Visual FX")]
+    public GameObject deathExplosionPrefab;
+
     [Header("Ragebait Settings")]
     public float jitterAmount = 0.15f; // How much the ball shakes to ruin timing
     public float reversalCheckInterval = 1f; // How often to check for a sudden reversal
@@ -19,6 +22,11 @@ public class PlayerController : MonoBehaviour
     [Header("State")]
     public bool isOrbiting = false;
     public Orbit currentOrbit;
+
+    [Header("Audio")]
+    public AudioClip jumpSound;
+    public AudioClip reverseSound;
+    private AudioSource audioSource;
 
     private float currentAngle = 0f;
     private float currentRadius = 0f;
@@ -33,6 +41,8 @@ public class PlayerController : MonoBehaviour
     void Start()
     {
         rb = GetComponent<Rigidbody2D>();
+        audioSource = GetComponent<AudioSource>();
+        if (audioSource == null) audioSource = gameObject.AddComponent<AudioSource>();
         
         // If we start attached to an orbit
         if (currentOrbit != null)
@@ -78,11 +88,14 @@ public class PlayerController : MonoBehaviour
             totalRevolutions += (currentOrbit.rotationSpeed * Time.deltaTime) / 360f;
             if (totalRevolutions >= 3f)
             {
-                GameManager.Instance.GameOver("Took too long! Orbit Exploded.");
+                Die("Took too long! Orbit Exploded.");
             }
 
-            // Move the player to the orbit position
-            transform.position = (Vector2)currentOrbit.transform.position + newPos;
+            // Move the player to the orbit position (Vector2 drops the Z, so we explicitly set Z to -1)
+            // By forcing Z to -1 via code, the ball will physically ALWAYS be closer to the camera than the orbits (which are at Z=0)
+            Vector3 calculatedPos = (Vector2)currentOrbit.transform.position + newPos;
+            calculatedPos.z = -1f;
+            transform.position = calculatedPos;
 
             // Check for tap/click to jump using the new Input System
             if (Pointer.current != null && Pointer.current.press.wasPressedThisFrame)
@@ -102,15 +115,12 @@ public class PlayerController : MonoBehaviour
                     jumpDir = -jumpDir; // Reverse direction
                     rb.linearVelocity = jumpDir * jumpSpeed; // Shoot backwards with full speed!
                     
+                    if (reverseSound != null) audioSource.PlayOneShot(reverseSound);
+
                     // Give a tiny bit of extra airtime so they don't unfairly timeout instantly
                     airTime -= 0.5f; 
                 }
             }
-
-            // --- RAGEBAIT: Mid-air Stutter Effect ---
-            // Scaled down significantly so it doesn't fight the forward velocity and reverse the ball
-            float stutterOffset = Random.Range(-jitterAmount * 2f, jitterAmount * 2f);
-            transform.position += (Vector3)jumpDir * (stutterOffset * Time.deltaTime);
         }
 
         // --- RAGEBAIT: Out of Bounds Check (Timer Based) ---
@@ -121,9 +131,24 @@ public class PlayerController : MonoBehaviour
             airTime += Time.deltaTime;
             if (airTime > 1.5f)
             {
-                GameManager.Instance.GameOver("Lost in space! Jump faster.");
+                Die("Lost in space! Jump faster.");
             }
         }
+    }
+
+    private void Die(string reason)
+    {
+        // Spawn the explosion particle effect
+        if (deathExplosionPrefab != null)
+        {
+            Instantiate(deathExplosionPrefab, transform.position, Quaternion.identity);
+        }
+
+        // Hide the player so it looks like it was destroyed
+        gameObject.SetActive(false);
+
+        // Tell the GameManager to trigger the UI and Ragebait logic
+        GameManager.Instance.GameOver(reason);
     }
 
     private void Jump()
@@ -153,6 +178,8 @@ public class PlayerController : MonoBehaviour
 
         // Apply velocity to the Rigidbody
         rb.linearVelocity = jumpDir * jumpSpeed;
+        
+        if (jumpSound != null) audioSource.PlayOneShot(jumpSound);
     }
 
     private void OnTriggerEnter2D(Collider2D collision)

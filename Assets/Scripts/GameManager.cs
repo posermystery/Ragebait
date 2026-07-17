@@ -13,6 +13,17 @@ public class GameManager : MonoBehaviour
     public Text reasonText;
     public Text rageMessageText;
 
+    [Header("Level Settings")]
+    public int currentLevelNumber = 1; // E.g., 1 for Level1, 2 for Level2
+
+    [Header("Dependencies")]
+    public CameraController cameraController;
+
+    [Header("Audio")]
+    public AudioClip deathSound;
+    public AudioClip winSound;
+    private AudioSource audioSource;
+
     public bool isGameOver = false;
     public bool isLevelWon = false;
 
@@ -131,6 +142,9 @@ public class GameManager : MonoBehaviour
 
     private void Start()
     {
+        audioSource = GetComponent<AudioSource>();
+        if (audioSource == null) audioSource = gameObject.AddComponent<AudioSource>();
+
         // Hide Game Over panel at start
         if (gameOverPanel != null)
             gameOverPanel.SetActive(false);
@@ -143,12 +157,32 @@ public class GameManager : MonoBehaviour
     private void Update()
     {
         // If the game is over (or won), wait for tap/click to restart
-        if ((isGameOver || isLevelWon))
+        if (isGameOver || isLevelWon)
         {
             if (Pointer.current != null && Pointer.current.press.wasPressedThisFrame)
             {
-                RestartLevel();
+                if (isLevelWon)
+                {
+                    // Flow shouldn't break! Go directly to the next level.
+                    string nextLevelName = "Level" + (currentLevelNumber + 1);
+                    
+                    // Check if the next level is actually added in Unity Build Settings
+                    if (Application.CanStreamedLevelBeLoaded(nextLevelName))
+                    {
+                        SceneManager.LoadScene(nextLevelName);
+                    }
+                    else
+                    {
+                        // If it's the last level of the game and no next level exists, go to Main Menu
+                        SceneManager.LoadScene("MainMenu");
+                    }
+                }
+                else
+                {
+                    RestartLevel();
+                }
             }
+            return;
         }
     }
 
@@ -157,6 +191,14 @@ public class GameManager : MonoBehaviour
         if (isGameOver || isLevelWon) return;
 
         isGameOver = true;
+
+        // Trigger Camera Shake for impact
+        if (cameraController != null)
+        {
+            cameraController.TriggerShake(0.6f, 0.4f); // 0.6s duration, 0.4 intensity
+        }
+        
+        if (deathSound != null) audioSource.PlayOneShot(deathSound);
 
         // Increment and save death count
         deathCount++;
@@ -180,6 +222,16 @@ public class GameManager : MonoBehaviour
         if (isGameOver || isLevelWon) return;
 
         isLevelWon = true;
+
+        // Unlock the next level (only if this is the highest level they've beaten)
+        int unlockedLevel = PlayerPrefs.GetInt("UnlockedLevel", 1);
+        if (currentLevelNumber >= unlockedLevel)
+        {
+            PlayerPrefs.SetInt("UnlockedLevel", currentLevelNumber + 1);
+            PlayerPrefs.Save();
+        }
+
+        if (winSound != null) audioSource.PlayOneShot(winSound);
 
         if (gameOverPanel != null)
         {
