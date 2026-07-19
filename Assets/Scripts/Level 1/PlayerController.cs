@@ -14,11 +14,6 @@ public class PlayerController : MonoBehaviour
     [Header("Visual FX")]
     public GameObject deathExplosionPrefab;
 
-    [Header("Ragebait Settings")]
-    public float jitterAmount = 0.15f; // How much the ball shakes to ruin timing
-    public float reversalCheckInterval = 1f; // How often to check for a sudden reversal
-    public float reversalChance = 0.15f; // 15% chance to suddenly reverse direction
-
     [Header("State")]
     public bool isOrbiting = false;
     public Orbit currentOrbit;
@@ -26,18 +21,17 @@ public class PlayerController : MonoBehaviour
     [Header("Audio")]
     public AudioClip jumpSound;
     [Range(0f, 1f)] public float jumpVolume = 0.1f; // Jump sound volume control
-    public AudioClip reverseSound;
     private AudioSource audioSource;
 
     private float currentAngle = 0f;
     private float currentRadius = 0f;
-    private float nextReversalCheck = 0f;
     private float totalRevolutions = 0f;
     private float airTime = 0f; // Tracks time spent in mid-air
-    private bool willReverseMidAir = false;
-    private float midAirReverseTimer = 0f;
     private Rigidbody2D rb;
     private Vector2 jumpDir;
+
+    // Track whether the current orbit is the last one before golden
+    private bool isOnLastOrbit = false;
 
     void Start()
     {
@@ -67,16 +61,6 @@ public class PlayerController : MonoBehaviour
             // Keep angle between 0 and 360
             currentAngle %= 360f;
 
-            // --- RAGEBAIT: Sudden Reversal ---
-            if (Time.time >= nextReversalCheck)
-            {
-                nextReversalCheck = Time.time + reversalCheckInterval;
-                if (Random.value < reversalChance)
-                {
-                    currentOrbit.isClockwise = !currentOrbit.isClockwise; // Surprise!
-                }
-            }
-
             // Calculate new position using trigonometry and our dynamic currentRadius
             float rad = currentAngle * Mathf.Deg2Rad;
             Vector2 newPos = new Vector2(
@@ -104,28 +88,8 @@ public class PlayerController : MonoBehaviour
                 Jump();
             }
         }
-        else if (!isOrbiting)
-        {
-            // --- RAGEBAIT: Mid-Air Rubberband Reversal! ---
-            if (willReverseMidAir)
-            {
-                midAirReverseTimer -= Time.deltaTime;
-                if (midAirReverseTimer <= 0f)
-                {
-                    willReverseMidAir = false; // Only do it once
-                    jumpDir = -jumpDir; // Reverse direction
-                    rb.linearVelocity = jumpDir * jumpSpeed; // Shoot backwards with full speed!
-                    
-                    if (reverseSound != null) audioSource.PlayOneShot(reverseSound);
 
-                    // Give a tiny bit of extra airtime so they don't unfairly timeout instantly
-                    airTime -= 0.5f; 
-                }
-            }
-        }
-
-        // --- RAGEBAIT: Out of Bounds Check (Timer Based) ---
-        // Instead of checking distance or speed, we just use a strict timer!
+        // --- Out of Bounds Check (Timer Based) ---
         // If you are flying in space for more than 1.5 seconds, you die.
         if (!isOrbiting)
         {
@@ -157,14 +121,6 @@ public class PlayerController : MonoBehaviour
         isOrbiting = false;
         airTime = 0f; // Reset mid-air timer
         
-        // --- RAGEBAIT: 10% chance to rubberband backwards in mid-air! ---
-        willReverseMidAir = (Random.value < 0.10f);
-        if (willReverseMidAir)
-        {
-            // Will snap backward randomly between 0.15s and 0.4s after jumping
-            midAirReverseTimer = Random.Range(0.15f, 0.4f);
-        }
-        
         // Add drag to simulate planetary gravity slowing the meteor down
         rb.linearDamping = spaceDrag;
         
@@ -176,6 +132,12 @@ public class PlayerController : MonoBehaviour
             Mathf.Cos(tangentAngleRad),
             Mathf.Sin(tangentAngleRad)
         ).normalized;
+
+        // --- THE TROLL: If on last orbit, reverse the jump direction 180 degrees! ---
+        if (isOnLastOrbit)
+        {
+            jumpDir = -jumpDir; // 180 degree flip!
+        }
 
         // Apply velocity to the Rigidbody
         rb.linearVelocity = jumpDir * jumpSpeed;
@@ -227,5 +189,42 @@ public class PlayerController : MonoBehaviour
 
         // Calculate the angle we hit the orbit at
         currentAngle = Mathf.Atan2(directionFromCenter.y, directionFromCenter.x) * Mathf.Rad2Deg;
+
+        // Check if this orbit is the last one before golden (next orbit in spawner would be golden)
+        // We detect this by checking if any sibling/nearby orbit has the GoldenOrbit tag
+        isOnLastOrbit = IsNextOrbitGolden();
+    }
+
+    private bool IsNextOrbitGolden()
+    {
+        // Find the LevelSpawner to check if this is the second-to-last orbit
+        LevelSpawner spawner = FindAnyObjectByType<LevelSpawner>();
+        if (spawner == null) return false;
+
+        // The golden orbit is the last one (targetOrbitCount - 1, 0-indexed)
+        // So the "last normal orbit" is targetOrbitCount - 2
+        // We check by counting how many orbits exist with "Orbit" tag below the golden one
+        
+        // Simple approach: Find the golden orbit and check if this orbit is the closest one to it
+        GameObject[] allOrbits = GameObject.FindGameObjectsWithTag("Orbit");
+        GameObject goldenOrbit = GameObject.FindGameObjectWithTag("GoldenOrbit");
+        
+        if (goldenOrbit == null) return false;
+
+        // Find which normal orbit is closest to the golden orbit (that's the last one)
+        float closestDist = float.MaxValue;
+        Orbit closestOrbit = null;
+
+        foreach (GameObject orbitObj in allOrbits)
+        {
+            float dist = Vector2.Distance(orbitObj.transform.position, goldenOrbit.transform.position);
+            if (dist < closestDist)
+            {
+                closestDist = dist;
+                closestOrbit = orbitObj.GetComponent<Orbit>();
+            }
+        }
+
+        return closestOrbit == currentOrbit;
     }
 }
