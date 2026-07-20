@@ -300,6 +300,18 @@ public class GameManager : MonoBehaviour
             {
                 rageMessageText.text = "You figured out you just had to walk backwards? Congrats, you have basic common sense. I bet you still fell for the fake gate at least 10 times though.\n\n(Tap to suffer...)";
             }
+            else if (currentLevelNumber == 4)
+            {
+                rageMessageText.text = "You broke a perfectly rigged game of Tic-Tac-Toe. Are you proud of cheating your way to victory?\n\n(Tap to suffer...)";
+            }
+            else if (currentLevelNumber == 5)
+            {
+                rageMessageText.text = "You abused an infinite jump glitch to fly out of the screen. Typical. You'd rather break the game than play it properly.\n\n(Tap to suffer...)";
+            }
+            else if (currentLevelNumber == 6)
+            {
+                rageMessageText.text = "Chasing teleporting apples like a desperate dog. I bet you felt really accomplished eating that last one.\n\n(Tap to suffer...)";
+            }
             else
             {
                 rageMessageText.text = "You beat Level " + currentLevelNumber + ". Still doesn't change the fact that you're terrible at this game.\n\n(Tap to continue...)";

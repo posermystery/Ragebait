@@ -42,6 +42,9 @@ public class MainMenuManager : MonoBehaviour
     public GameObject levelButtonPrefab; // The button template to spawn
     public Transform levelGridParent;    // The Content object of the Scroll View
     public int totalLevels = 30;         // Total levels in your game
+    public Sprite lockSprite;            // Assign your custom lock sprite here
+    [Range(0.1f, 1.5f)]
+    public float lockSpriteScale = 0.85f; // Scale of the lock sprite relative to button
 
     void Start()
     {
@@ -128,7 +131,34 @@ public class MainMenuManager : MonoBehaviour
                 else
                 {
                     btn.interactable = false; 
-                    if (btnText != null) btnText.text = "🔒"; 
+                    if (btnText != null) btnText.text = ""; // Hide the number text
+                    
+                    // Add lock sprite image on top
+                    if (lockSprite != null)
+                    {
+                        GameObject lockImgObj = new GameObject("LockIcon");
+                        lockImgObj.transform.SetParent(newBtnObj.transform, false);
+                        Image lockImg = lockImgObj.AddComponent<Image>();
+                        lockImg.sprite = lockSprite;
+                        lockImg.preserveAspect = true;
+                        
+                        RectTransform rt = lockImgObj.GetComponent<RectTransform>();
+                        rt.anchorMin = new Vector2(0.5f, 0.5f);
+                        rt.anchorMax = new Vector2(0.5f, 0.5f);
+                        rt.pivot = new Vector2(0.5f, 0.5f);
+                        rt.anchoredPosition = Vector2.zero;
+                        
+                        // Set size relative to the button using the scale variable
+                        RectTransform btnRect = newBtnObj.GetComponent<RectTransform>();
+                        if (btnRect != null)
+                        {
+                            rt.sizeDelta = new Vector2(btnRect.sizeDelta.x * lockSpriteScale, btnRect.sizeDelta.y * lockSpriteScale);
+                        }
+                        else
+                        {
+                            rt.sizeDelta = new Vector2(80, 80);
+                        }
+                    }
                 }
             }
         }

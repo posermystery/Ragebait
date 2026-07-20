@@ -383,6 +383,8 @@ MonoBehaviour:
   levelButtonPrefab: {fileID: 1380528043766362065, guid: 9efb328635a79d347addd77c6240cdab, type: 3}
   levelGridParent: {fileID: 1114959599}
   totalLevels: 30
+  lockSprite: {fileID: 21300000, guid: 71ed943daa732b345b5107b5c150a65f, type: 3}
+  lockSpriteScale: 1.5
 --- !u!1 &133795918
 GameObject:
   m_ObjectHideFlags: 0
@@ -453,7 +455,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 1
     m_LineSpacing: 1
-  m_Text: SETTINGS
+  m_Text: DIFFICULTY
 --- !u!222 &133795921
 CanvasRenderer:
   m_ObjectHideFlags: 0
