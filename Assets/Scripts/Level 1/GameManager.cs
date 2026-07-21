@@ -195,9 +195,16 @@ public class GameManager : MonoBehaviour
         audioSource = GetComponent<AudioSource>();
         if (audioSource == null) audioSource = gameObject.AddComponent<AudioSource>();
 
-        // Hide Game Over panel at start
+        // Hide Game Over panel at start and force its canvas to render on top
         if (gameOverPanel != null)
+        {
             gameOverPanel.SetActive(false);
+            Canvas parentCanvas = gameOverPanel.GetComponentInParent<Canvas>();
+            if (parentCanvas != null)
+            {
+                parentCanvas.sortingOrder = 999; // Guarantee it renders over everything
+            }
+        }
 
         // Load and display death count permanently
         deathCount = PlayerPrefs.GetInt("DeathCount", 0);
@@ -311,6 +318,10 @@ public class GameManager : MonoBehaviour
             else if (currentLevelNumber == 6)
             {
                 rageMessageText.text = "Chasing teleporting apples like a desperate dog. I bet you felt really accomplished eating that last one.\n\n(Tap to suffer...)";
+            }
+            else if (currentLevelNumber == 7)
+            {
+                rageMessageText.text = "You poked an 'i'. What an intellectual mastermind you are. I'm trembling at your genius.\n\n(Tap to suffer...)";
             }
             else
             {
