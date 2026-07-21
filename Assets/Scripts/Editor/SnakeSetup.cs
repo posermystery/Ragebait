@@ -114,31 +114,59 @@ public class SnakeSetup : EditorWindow
         apple.levelUI = levelUI;
         snake.levelUI = levelUI;
 
-        // Hint Text for mobile swipe
-        var hintObj = new GameObject("SwipeHint");
-        hintObj.transform.SetParent(canvas.transform, false);
-        var hintText = hintObj.AddComponent<Text>();
-        hintText.text = "Swipe to Move";
-        hintText.font = Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf");
-        hintText.fontSize = 48;
-        hintText.alignment = TextAnchor.LowerCenter;
-        hintText.color = new Color(1f, 1f, 1f, 0.6f);
+        // ── D-Pad UI ──
+        var dpadObj = new GameObject("DPad");
+        dpadObj.transform.SetParent(canvas.transform, false);
+        var dpadRect = dpadObj.AddComponent<RectTransform>();
+        dpadRect.anchorMin = new Vector2(0.5f, 0.15f);
+        dpadRect.anchorMax = new Vector2(0.5f, 0.15f);
+        dpadRect.pivot = new Vector2(0.5f, 0.5f);
+        dpadRect.anchoredPosition = Vector2.zero;
+        dpadRect.sizeDelta = new Vector2(400, 400);
 
-        var hintRect = hintObj.GetComponent<RectTransform>();
-        hintRect.anchorMin = new Vector2(0.5f, 0.05f);
-        hintRect.anchorMax = new Vector2(0.5f, 0.05f);
-        hintRect.pivot = new Vector2(0.5f, 0f);
-        hintRect.anchoredPosition = Vector2.zero;
-        hintRect.sizeDelta = new Vector2(600, 80);
-
-        // Add outline to make the text sharper and clearer against the background
-        var hintOutline = hintObj.AddComponent<Outline>();
-        hintOutline.effectColor = new Color(0, 0, 0, 0.5f);
-        hintOutline.effectDistance = new Vector2(2, -2);
+        Font font = Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf");
+        
+        CreateDPadButton(dpadObj.transform, "UpBtn", "▲", new Vector2(0, 140), font, snake.MoveUp, 0f);
+        CreateDPadButton(dpadObj.transform, "DownBtn", "▲", new Vector2(0, -140), font, snake.MoveDown, 180f);
+        CreateDPadButton(dpadObj.transform, "LeftBtn", "▲", new Vector2(-140, 0), font, snake.MoveLeft, 90f);
+        CreateDPadButton(dpadObj.transform, "RightBtn", "▲", new Vector2(140, 0), font, snake.MoveRight, -90f);
 
         Selection.activeGameObject = snakeObj;
-        Debug.Log("<color=lime><b>[Orbitwa]</b> Snake Level (Level 6) generated! " +
+        Selection.activeGameObject = snakeObj;
+        Debug.Log("<color=lime><b>[Orbitwa]</b> Snake Level (Level 6) generated with D-Pad! " +
                   "Assign your custom Sprites to SnakeController and AppleTroll!</color>");
+    }
+
+    private static void CreateDPadButton(Transform parent, string name, string text, Vector2 pos, Font font, UnityEngine.Events.UnityAction action, float textRotation)
+    {
+        var btnObj = new GameObject(name);
+        btnObj.transform.SetParent(parent, false);
+        
+        var img = btnObj.AddComponent<Image>();
+        img.color = new Color(0.2f, 0.2f, 0.2f, 0.8f);
+        
+        var btn = btnObj.AddComponent<Button>();
+        btn.onClick.AddListener(action);
+
+        var rect = btnObj.GetComponent<RectTransform>();
+        rect.anchoredPosition = pos;
+        rect.sizeDelta = new Vector2(130, 130);
+
+        var txtObj = new GameObject("Text");
+        txtObj.transform.SetParent(btnObj.transform, false);
+        var txt = txtObj.AddComponent<Text>();
+        txt.text = text;
+        txt.font = font;
+        txt.fontSize = 60;
+        txt.alignment = TextAnchor.MiddleCenter;
+        txt.color = Color.white;
+        
+        var txtRect = txtObj.GetComponent<RectTransform>();
+        txtRect.anchorMin = Vector2.zero;
+        txtRect.anchorMax = Vector2.one;
+        txtRect.sizeDelta = Vector2.zero;
+        txtRect.anchoredPosition = Vector2.zero;
+        txtRect.localEulerAngles = new Vector3(0, 0, textRotation);
     }
 
     private static Sprite GetOrCreateWhiteSprite()

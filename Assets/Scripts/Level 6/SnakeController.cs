@@ -48,6 +48,19 @@ public class SnakeController : MonoBehaviour
     // ─── Unity ───
     void Start()
     {
+        // Hook up D-Pad buttons at runtime (Editor listeners don't persist)
+        var upBtn = GameObject.Find("UpBtn")?.GetComponent<UnityEngine.UI.Button>();
+        if (upBtn != null) upBtn.onClick.AddListener(MoveUp);
+
+        var downBtn = GameObject.Find("DownBtn")?.GetComponent<UnityEngine.UI.Button>();
+        if (downBtn != null) downBtn.onClick.AddListener(MoveDown);
+
+        var leftBtn = GameObject.Find("LeftBtn")?.GetComponent<UnityEngine.UI.Button>();
+        if (leftBtn != null) leftBtn.onClick.AddListener(MoveLeft);
+
+        var rightBtn = GameObject.Find("RightBtn")?.GetComponent<UnityEngine.UI.Button>();
+        if (rightBtn != null) rightBtn.onClick.AddListener(MoveRight);
+
         whiteSprite = MakeWhiteSprite();
 
         // Start with 4 segments (head + 3 body parts)
@@ -203,6 +216,11 @@ public class SnakeController : MonoBehaviour
     }
 
     // ─── Public helpers ───
+
+    public void MoveUp() { if (direction != Vector2Int.down) nextDir = Vector2Int.up; }
+    public void MoveDown() { if (direction != Vector2Int.up) nextDir = Vector2Int.down; }
+    public void MoveLeft() { if (direction != Vector2Int.right) nextDir = Vector2Int.left; }
+    public void MoveRight() { if (direction != Vector2Int.left) nextDir = Vector2Int.right; }
 
     /// <summary>Manhattan distance from snake head to a given grid position.</summary>
     public int DistanceTo(Vector2Int pos)

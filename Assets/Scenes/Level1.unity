@@ -501,9 +501,9 @@ MonoBehaviour:
       m_Calls: []
   m_FontData:
     m_Font: {fileID: 10102, guid: 0000000000000000e000000000000000, type: 0}
-    m_FontSize: 3
+    m_FontSize: 50
     m_FontStyle: 1
-    m_BestFit: 1
+    m_BestFit: 0
     m_MinSize: 0
     m_MaxSize: 150
     m_Alignment: 1
@@ -1313,14 +1313,10 @@ MonoBehaviour:
   spaceDrag: 1.5
   spiralSpeed: 5
   deathExplosionPrefab: {fileID: 6400219416038652365, guid: 97c696f9c7a3c15408e1140eb0c701bb, type: 3}
-  jitterAmount: 0.15
-  reversalCheckInterval: 1
-  reversalChance: 0.15
   isOrbiting: 0
   currentOrbit: {fileID: 0}
   jumpSound: {fileID: 8300000, guid: 78942aaea3ed27a429546b92eb0a0c4f, type: 3}
   jumpVolume: 0.3
-  reverseSound: {fileID: 8300000, guid: f6430bf331d754d4080939f059fe6038, type: 3}
 --- !u!96 &1688814811
 TrailRenderer:
   serializedVersion: 4

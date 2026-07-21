@@ -184,16 +184,26 @@ public class GameManager : MonoBehaviour
 
     private void Awake()
     {
+        // Force 60 FPS on mobile devices (default is often 30, which feels unpolished)
+        Application.targetFrameRate = 60;
+
         if (Instance == null)
+        {
             Instance = this;
+            // DontDestroyOnLoad(gameObject); // Optional: if you want the GameManager to persist
+        }
         else
+        {
             Destroy(gameObject);
+        }
     }
 
     private void Start()
     {
         audioSource = GetComponent<AudioSource>();
         if (audioSource == null) audioSource = gameObject.AddComponent<AudioSource>();
+
+        AdjustCameraForMobile();
 
         // Hide Game Over panel at start and force its canvas to render on top
         if (gameOverPanel != null)
@@ -341,5 +351,24 @@ public class GameManager : MonoBehaviour
     private void RestartLevel()
     {
         SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+    }
+
+    private void AdjustCameraForMobile()
+    {
+        if (Camera.main != null && Camera.main.orthographic)
+        {
+            // The aspect ratio we designed the game for (1080x1920 = 9:16)
+            float targetAspect = 1080f / 1920f;
+            
+            // The actual aspect ratio of the mobile device screen
+            float windowAspect = (float)Screen.width / (float)Screen.height;
+            
+            // If the screen is narrower than 9:16 (like modern 20:9 phones)
+            if (windowAspect < targetAspect)
+            {
+                // Increase the orthographic size to ensure width fits perfectly
+                Camera.main.orthographicSize = Camera.main.orthographicSize * (targetAspect / windowAspect);
+            }
+        }
     }
 }

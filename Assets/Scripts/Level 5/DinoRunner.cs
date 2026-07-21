@@ -54,6 +54,10 @@ public class DinoRunner : MonoBehaviour
     {
         if (isDead || inputLocked) return;
 
+        // Visual polish: Rotate continuously to simulate rolling forward
+        rb.freezeRotation = false;
+        rb.angularVelocity = -400f; 
+
         // Score counter
         score += Time.deltaTime * 10f;
         if (scoreText != null)
