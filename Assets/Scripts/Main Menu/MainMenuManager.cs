@@ -20,7 +20,6 @@ public class MainMenuManager : MonoBehaviour
 
     [Header("Game Info")]
     public Text gameInfoText;
-    [TextArea] public string customGameInfo = "Created by [Your Name]. A game designed to test your patience and sanity.";
 
     [Header("Audio (Drag n Drop SFX here)")]
     public AudioClip clickSound;
@@ -203,7 +202,10 @@ public class MainMenuManager : MonoBehaviour
     {
         mainMenuPanel.SetActive(false);
         gameInfoPanel.SetActive(true);
-        if (gameInfoText != null) gameInfoText.text = customGameInfo;
+        if (gameInfoText != null) 
+        {
+            gameInfoText.text = "Hi, I'm Sanskar, the developer of this game.\n\nThis project started out as my college assignment while I was learning Unity. After spending countless hours getting enraged over fixing endless bugs in my code, I decided it was only fair to pass that frustration on to someone else.\n\nSo, I built this game with one simple goal: to ragebait all of you. Enjoy the suffering!";
+        }
     }
 
     public void ClickExit()

@@ -369,8 +369,6 @@ MonoBehaviour:
   tauntMessage: Adjust Difficulty? Hah! What did you think this was, a fair game?
     Deal with it or quit.
   gameInfoText: {fileID: 1155671263}
-  customGameInfo: Created by [Your Name]. A game designed to test your patience and
-    sanity.
   clickSound: {fileID: 8300000, guid: 7c35903f060647140af6699f4437554d, type: 3}
   startButton: {fileID: 760407772}
   levelSelectButton: {fileID: 1505499934}
@@ -2364,7 +2362,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: New Text
+  m_Text: aaaaaa
 --- !u!222 &1155671264
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -2389,8 +2387,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 800, y: 400}
+  m_AnchoredPosition: {x: 0, y: -200}
+  m_SizeDelta: {x: 800, y: 1500}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &1168746563
 GameObject:
