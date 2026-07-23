@@ -31,10 +31,15 @@ public class SnakeController : MonoBehaviour
     private List<Vector2Int>     segments  = new List<Vector2Int>();
     private List<GameObject>     segGOs    = new List<GameObject>();
     private Vector2Int direction           = Vector2Int.right;
-    private Vector2Int nextDir             = Vector2Int.right;
+    private Queue<Vector2Int> inputQueue   = new Queue<Vector2Int>();
     private float      moveTimer           = 0f;
     private bool       isDead              = false;
     private bool       inputLocked         = true;
+
+    // Ragebait Extra Apple feature
+    private bool       wasAdjacentToApple  = false;
+    private List<Vector2Int> extraApples   = new List<Vector2Int>();
+    private List<GameObject> extraAppleGOs = new List<GameObject>();
 
     // Touch swipe
     private Vector2 swipeStart;
@@ -95,17 +100,10 @@ public class SnakeController : MonoBehaviour
         if (Keyboard.current != null)
         {
             var kb = Keyboard.current;
-            if ((kb.wKey.wasPressedThisFrame || kb.upArrowKey.wasPressedThisFrame)
-                && direction != Vector2Int.down)  nextDir = Vector2Int.up;
-
-            if ((kb.sKey.wasPressedThisFrame || kb.downArrowKey.wasPressedThisFrame)
-                && direction != Vector2Int.up)    nextDir = Vector2Int.down;
-
-            if ((kb.aKey.wasPressedThisFrame || kb.leftArrowKey.wasPressedThisFrame)
-                && direction != Vector2Int.right) nextDir = Vector2Int.left;
-
-            if ((kb.dKey.wasPressedThisFrame || kb.rightArrowKey.wasPressedThisFrame)
-                && direction != Vector2Int.left)  nextDir = Vector2Int.right;
+            if (kb.wKey.wasPressedThisFrame || kb.upArrowKey.wasPressedThisFrame) EnqueueInput(Vector2Int.up);
+            if (kb.sKey.wasPressedThisFrame || kb.downArrowKey.wasPressedThisFrame) EnqueueInput(Vector2Int.down);
+            if (kb.aKey.wasPressedThisFrame || kb.leftArrowKey.wasPressedThisFrame) EnqueueInput(Vector2Int.left);
+            if (kb.dKey.wasPressedThisFrame || kb.rightArrowKey.wasPressedThisFrame) EnqueueInput(Vector2Int.right);
         }
 
         // Touch swipe (Android)
@@ -114,27 +112,37 @@ public class SnakeController : MonoBehaviour
             var touches = Touchscreen.current.touches;
             for (int i = 0; i < touches.Count; i++)
             {
-                var phase = touches[i].phase.ReadValue();
+                var touch = touches[i];
+                var phase = touch.phase.ReadValue();
+                
                 if (phase == UnityEngine.InputSystem.TouchPhase.Began)
                 {
-                    swipeStart = touches[i].position.ReadValue();
+                    // Ignore swipes that start on UI elements (like the D-Pad)
+                    if (UnityEngine.EventSystems.EventSystem.current != null && 
+                        UnityEngine.EventSystems.EventSystem.current.IsPointerOverGameObject(touch.touchId.ReadValue()))
+                    {
+                        swiping = false;
+                        continue;
+                    }
+
+                    swipeStart = touch.position.ReadValue();
                     swiping    = true;
                 }
                 else if (swiping && phase == UnityEngine.InputSystem.TouchPhase.Ended)
                 {
                     swiping = false;
-                    Vector2 delta = touches[i].position.ReadValue() - swipeStart;
-                    if (delta.magnitude > 40f)
+                    Vector2 delta = touch.position.ReadValue() - swipeStart;
+                    if (delta.magnitude > 50f)
                     {
                         if (Mathf.Abs(delta.x) >= Mathf.Abs(delta.y))
                         {
-                            if (delta.x > 0 && direction != Vector2Int.left)  nextDir = Vector2Int.right;
-                            if (delta.x < 0 && direction != Vector2Int.right) nextDir = Vector2Int.left;
+                            if (delta.x > 0) EnqueueInput(Vector2Int.right);
+                            else EnqueueInput(Vector2Int.left);
                         }
                         else
                         {
-                            if (delta.y > 0 && direction != Vector2Int.down)  nextDir = Vector2Int.up;
-                            if (delta.y < 0 && direction != Vector2Int.up)    nextDir = Vector2Int.down;
+                            if (delta.y > 0) EnqueueInput(Vector2Int.up);
+                            else EnqueueInput(Vector2Int.down);
                         }
                     }
                 }
@@ -145,31 +153,82 @@ public class SnakeController : MonoBehaviour
     // ─── One grid step ───
     private void Step()
     {
-        direction = nextDir;
+        if (inputQueue.Count > 0)
+        {
+            direction = inputQueue.Dequeue();
+        }
+        
         Vector2Int newHead = segments[0] + direction;
 
         // Wall collision → wrap (Nokia style) or die — here we wrap
         newHead.x = (newHead.x + gridWidth)  % gridWidth;
         newHead.y = (newHead.y + gridHeight) % gridHeight;
 
-        // Self collision
         for (int i = 0; i < segments.Count - 1; i++)
         {
             if (newHead == segments[i])
             {
-                Die();
+                Die("You bit yourself. Classic.");
                 return;
             }
         }
 
-        bool ateApple = (newHead == apple.GetGridPos());
+        bool ateMainApple = (newHead == apple.GetGridPos());
+        
+        // Did we eat an extra apple?
+        bool ateExtraApple = extraApples.Contains(newHead);
+        if (ateExtraApple)
+        {
+            int idx = extraApples.IndexOf(newHead);
+            extraApples.RemoveAt(idx);
+            
+            GameObject go = extraAppleGOs[idx];
+            extraAppleGOs.RemoveAt(idx);
+            Destroy(go);
+
+            // Check if we just cleared the last extra apple and already ate 5 main apples!
+            if (apple != null && apple.applesEaten >= 5 && extraApples.Count == 0)
+            {
+                if (GameManager.Instance != null)
+                {
+                    GameManager.Instance.WinLevel();
+                }
+            }
+        }
+
+        Vector2Int oldTail = segments[segments.Count - 1];
+
+        // --- RAGEBAIT EXTRA APPLE MECHANIC ---
+        // If we were adjacent to the MAIN apple but didn't eat it this step, we missed it!
+        // We poop an EXTRA apple that makes the snake grow but doesn't count towards winning!
+        if (wasAdjacentToApple && !ateMainApple)
+        {
+            extraApples.Add(oldTail);
+            
+            var go = new GameObject("ExtraApple");
+            go.transform.position = GridToWorld(oldTail);
+            go.transform.localScale = Vector3.one * (cellSize * 0.88f);
+            
+            var sr = go.AddComponent<SpriteRenderer>();
+            sr.sortingOrder = 3; // Behind snake
+            sr.sprite = apple.appleSprite != null ? apple.appleSprite : whiteSprite; 
+            sr.color = apple.appleSprite == null ? Color.red : Color.white;
+            
+            extraAppleGOs.Add(go);
+        }
 
         segments.Insert(0, newHead);
 
-        if (!ateApple)
+        bool grewThisStep = ateMainApple || ateExtraApple;
+
+        if (!grewThisStep)
             segments.RemoveAt(segments.Count - 1);
-        else
+        
+        if (ateMainApple)
             apple.OnEaten(this);
+
+        // Update adjacency for NEXT step (only relative to the MAIN apple)
+        wasAdjacentToApple = (DistanceTo(apple.GetGridPos()) == 1);
 
         RebuildVisuals();
     }
@@ -203,7 +262,7 @@ public class SnakeController : MonoBehaviour
     }
 
     // ─── Death ───
-    private void Die()
+    private void Die(string msg = null)
     {
         isDead = true;
         string[] msgs = {
@@ -211,20 +270,38 @@ public class SnakeController : MonoBehaviour
             "Self-destruction speedrun any%",
             "Snake ate snake. The ouroboros wins.",
         };
+        
+        string finalMsg = msg != null ? msg : msgs[Random.Range(0, msgs.Length)];
+        
         if (GameManager.Instance != null)
-            GameManager.Instance.GameOver(msgs[Random.Range(0, msgs.Length)]);
+            GameManager.Instance.GameOver(finalMsg);
     }
 
-    // ─── Public helpers ───
+    public void MoveUp() { EnqueueInput(Vector2Int.up); }
+    public void MoveDown() { EnqueueInput(Vector2Int.down); }
+    public void MoveLeft() { EnqueueInput(Vector2Int.left); }
+    public void MoveRight() { EnqueueInput(Vector2Int.right); }
 
-    public void MoveUp() { if (direction != Vector2Int.down) nextDir = Vector2Int.up; }
-    public void MoveDown() { if (direction != Vector2Int.up) nextDir = Vector2Int.down; }
-    public void MoveLeft() { if (direction != Vector2Int.right) nextDir = Vector2Int.left; }
-    public void MoveRight() { if (direction != Vector2Int.left) nextDir = Vector2Int.right; }
+    private void EnqueueInput(Vector2Int dir)
+    {
+        // Prevent reversing back into the body
+        Vector2Int lastDir = inputQueue.Count > 0 ? inputQueue.ToArray()[inputQueue.Count - 1] : direction;
+        
+        if (dir != -lastDir && dir != lastDir)
+        {
+            // Limit queue size to 2 to prevent spam queuing
+            if (inputQueue.Count < 2) 
+            {
+                inputQueue.Enqueue(dir);
+            }
+        }
+    }
 
     /// <summary>Manhattan distance from snake head to a given grid position.</summary>
     public int DistanceTo(Vector2Int pos)
         => Mathf.Abs(segments[0].x - pos.x) + Mathf.Abs(segments[0].y - pos.y);
+
+    public int GetExtraAppleCount() => extraApples.Count;
 
     public List<Vector2Int> GetOccupiedCells() => segments;
 

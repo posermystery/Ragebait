@@ -16,7 +16,7 @@ public class AppleTroll : MonoBehaviour
     public SnakeLevelUI levelUI;
 
     private Vector2Int gridPos;
-    private int applesEaten = 0;
+    public int applesEaten = 0;
     private int teleportsDone = 0;
     private SpriteRenderer sr;
     private AudioSource audioSource;
@@ -67,7 +67,8 @@ public class AppleTroll : MonoBehaviour
         if (eatSound != null)
             audioSource.PlayOneShot(eatSound, volume);
 
-        if (applesEaten >= 5)
+        // Win only if we ate 5 AND there are no extra apples left!
+        if (applesEaten >= 5 && snakeRef.GetExtraAppleCount() == 0)
         {
             // Win condition!
             gameObject.SetActive(false);
@@ -76,7 +77,16 @@ public class AppleTroll : MonoBehaviour
             return;
         }
 
-        Reposition();
+        if (applesEaten >= 5)
+        {
+            // We reached 5 main apples, but extra apples remain.
+            // Hide the main apple so the player focuses on cleaning up the extra ones!
+            gameObject.SetActive(false);
+        }
+        else
+        {
+            Reposition();
+        }
     }
 
     private void TeleportTroll()

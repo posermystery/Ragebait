@@ -33,6 +33,9 @@ public class PlayerController : MonoBehaviour
     // Track whether the current orbit is the last one before golden
     private bool isOnLastOrbit = false;
 
+    // Radius line
+    private LineRenderer radiusLine;
+
     void Start()
     {
         rb = GetComponent<Rigidbody2D>();
@@ -45,6 +48,35 @@ public class PlayerController : MonoBehaviour
             AttachToOrbit(currentOrbit);
             currentRadius = currentOrbit.radius; // Perfect start
         }
+
+        SetupRadiusLine();
+    }
+
+    private void SetupRadiusLine()
+    {
+        radiusLine = gameObject.AddComponent<LineRenderer>();
+        radiusLine.positionCount = 2;
+        
+        // Find a standard unlit shader so the color is vibrant
+        Shader unlitShader = Shader.Find("Sprites/Default");
+        if (unlitShader != null)
+        {
+            radiusLine.material = new Material(unlitShader);
+        }
+        
+        // Aesthetic styling
+        radiusLine.startWidth = 0.05f; // Thin near center
+        radiusLine.endWidth = 0.15f;   // Slightly thicker near player
+        
+        // Semi-transparent glowing color (Cyan/White style)
+        Color startColor = new Color(0f, 0.8f, 1f, 0.2f); // Faded at center
+        Color endColor = new Color(0f, 1f, 1f, 0.8f);     // Brighter at player
+        
+        radiusLine.startColor = startColor;
+        radiusLine.endColor = endColor;
+        
+        radiusLine.sortingOrder = -5; // Behind the player and orbits
+        radiusLine.enabled = false;
     }
 
     void Update()
@@ -88,12 +120,28 @@ public class PlayerController : MonoBehaviour
                 if (GameManager.IsPointerOverMenuButton()) return; // Prevent tapping through UI
                 Jump();
             }
+
+            // Update Radius Line
+            if (radiusLine != null)
+            {
+                radiusLine.enabled = true;
+                Vector3 centerPos = currentOrbit.transform.position;
+                centerPos.z = 1f; // Push back visually
+                radiusLine.SetPosition(0, centerPos);
+                
+                Vector3 playerPos = transform.position;
+                playerPos.z = 1f; // Push back visually
+                radiusLine.SetPosition(1, playerPos);
+            }
         }
 
         // --- Out of Bounds Check (Timer Based) ---
         // If you are flying in space for more than 1.5 seconds, you die.
         if (!isOrbiting)
         {
+            // Hide the line when jumping
+            if (radiusLine != null) radiusLine.enabled = false;
+
             airTime += Time.deltaTime;
             if (airTime > 1.5f)
             {

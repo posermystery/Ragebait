@@ -53,11 +53,12 @@ public class LevelSpawner : MonoBehaviour
         // Randomize X position slightly so it's not a straight line upwards
         float randomX = Random.Range(-2f, 2f);
         
-        // If it's the very first orbit, keep it centered and at 0 so player starts exactly on it
-        if (orbitsSpawned == 0)
+        // If it's the very first orbit, or the troll orbit (second to last), or the golden orbit, keep it centered
+        // This ensures the troll happens perfectly on-screen.
+        if (orbitsSpawned == 0 || orbitsSpawned >= targetOrbitCount - 2)
         {
             randomX = 0f;
-            nextSpawnY = 0f; // Make sure first orbit is exactly at origin
+            if (orbitsSpawned == 0) nextSpawnY = 0f; // Make sure first orbit is exactly at origin
         }
 
         Vector3 spawnPosition = new Vector3(randomX, nextSpawnY, 0f);
