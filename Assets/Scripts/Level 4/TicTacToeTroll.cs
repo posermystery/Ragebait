@@ -13,6 +13,11 @@ public class TicTacToeTroll : MonoBehaviour
     [Range(400, 1200)]
     public float boardSize = 900f;
 
+    [Header("Troll Settings (Customize Chance in Inspector!)")]
+    [Tooltip("Percentage chance (0 to 100) that placing X will place opponent's O instead")]
+    [Range(0, 100)]
+    public int trollChancePercentage = 20;
+
     [Header("Win Line Settings")]
     [Tooltip("Color of the line drawn through winning cells")]
     public Color winLineColor = Color.yellow;
@@ -21,7 +26,7 @@ public class TicTacToeTroll : MonoBehaviour
 
     [Header("Audio")]
     public AudioClip clickSound;
-    public AudioClip trollSound; // Sound when 25% chance triggers
+    public AudioClip trollSound; // Sound when troll chance triggers
     private AudioSource audioSource;
 
     private int[] board = new int[9]; // 0 = empty, 1 = Player (X), 2 = Computer (O)
@@ -103,8 +108,8 @@ public class TicTacToeTroll : MonoBehaviour
     {
         if (gameOver || !isPlayerTurn || inputLocked || board[index] != 0) return;
 
-        // TROLL MECHANIC: 25% chance to place opponent's symbol
-        bool trolled = Random.Range(0, 100) < 25;
+        // TROLL MECHANIC: 20% (or custom Inspector %) chance to place opponent's symbol
+        bool trolled = Random.Range(0, 100) < trollChancePercentage;
 
         if (trolled)
         {

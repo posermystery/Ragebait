@@ -432,6 +432,10 @@ public class GameManager : MonoBehaviour
             {
                 rageMessageText.text = "You actually read the terms AND didn't fall for the button swap? Okay, you earn exactly one (1) gram of respect. Don't let it get to your head.\n\n(Tap to suffer...)";
             }
+            else if (currentLevelNumber == 9)
+            {
+                rageMessageText.text = "You literally had to turn the entire world upside down just to get an egg past a basket? Newton is rolling in his grave right now. I bet you looked ridiculous doing that.\n\n(Tap to suffer...)";
+            }
             else
             {
                 rageMessageText.text = "You beat Level " + currentLevelNumber + ". Still doesn't change the fact that you're terrible at this game.\n\n(Tap to continue...)";
