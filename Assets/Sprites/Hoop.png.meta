@@ -1,10 +1,10 @@
 fileFormatVersion: 2
-guid: 7e93f1b40d1b755468aa28b2766be98c
+guid: 1d0474c007350fc4fa7623a18352e990
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: 6962363639430289164
-    second: skull-icon-25-recolored_0
+      213: -1341090406375734871
+    second: Hoop_0
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -37,21 +37,21 @@ TextureImporter:
   maxTextureSize: 2048
   textureSettings:
     serializedVersion: 2
-    filterMode: 0
+    filterMode: 1
     aniso: 1
     mipBias: 0
     wrapU: 1
     wrapV: 1
-    wrapW: 0
+    wrapW: 1
   nPOTScale: 0
   lightmap: 0
   compressionQuality: 50
   spriteMode: 1
-  spriteExtrude: 0
-  spriteMeshType: 0
+  spriteExtrude: 1
+  spriteMeshType: 1
   alignment: 0
   spritePivot: {x: 0.5, y: 0.5}
-  spritePixelsToUnits: 50
+  spritePixelsToUnits: 100
   spriteBorder: {x: 0, y: 0, z: 0, w: 0}
   spriteGenerateFallbackPhysicsShape: 1
   alphaUsage: 1
@@ -75,7 +75,7 @@ TextureImporter:
     maxTextureSize: 2048
     resizeAlgorithm: 0
     textureFormat: -1
-    textureCompression: 0
+    textureCompression: 1
     compressionQuality: 50
     crunchedCompression: 0
     allowsAlphaSplitting: 0
@@ -126,13 +126,13 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: skull-icon-25-recolored_0
+      name: Hoop_0
       rect:
         serializedVersion: 2
-        x: 0
-        y: 0
-        width: 888
-        height: 1024
+        x: 67
+        y: 1
+        width: 1438
+        height: 1021
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -141,8 +141,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: c07965587d84f9060800000000000000
-      internalID: 6962363639430289164
+      spriteID: 9a14a4c716d736de0800000000000000
+      internalID: -1341090406375734871
       vertices: []
       indices: 
       edges: []
@@ -161,7 +161,7 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      skull-icon-25-recolored_0: 6962363639430289164
+      Hoop_0: -1341090406375734871
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

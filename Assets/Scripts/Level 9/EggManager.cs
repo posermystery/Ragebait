@@ -62,7 +62,7 @@ public class EggManager : MonoBehaviour
                 {
                     score = newScore;
                     if (scoreText != null)
-                        scoreText.text = "Baskets: " + score;
+                        scoreText.text = "Hoops: " + score;
                 }
             }
         }

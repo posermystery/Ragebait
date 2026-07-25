@@ -434,7 +434,7 @@ public class GameManager : MonoBehaviour
             }
             else if (currentLevelNumber == 9)
             {
-                rageMessageText.text = "You literally had to turn the entire world upside down just to get an egg past a basket? Newton is rolling in his grave right now. I bet you looked ridiculous doing that.\n\n(Tap to suffer...)";
+                rageMessageText.text = "You literally had to turn the entire world upside down just to get a basketball into an upside-down hoop? Newton is rolling in his grave right now. I bet you looked ridiculous doing that.\n\n(Tap to suffer...)";
             }
             else
             {

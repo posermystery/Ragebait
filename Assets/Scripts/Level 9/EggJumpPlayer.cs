@@ -107,10 +107,12 @@ public class EggJumpPlayer : MonoBehaviour
         Camera cam = Camera.main;
         if (cam != null && !isGravityReversed)
         {
-            float bottomOfScreen = cam.transform.position.y - cam.orthographicSize - 2f;
+            // As soon as egg reaches the bottom edge of the screen, die instantly!
+            float bottomOfScreen = cam.transform.position.y - cam.orthographicSize + 0.2f;
             if (transform.position.y < bottomOfScreen)
             {
                 Lose();
+                return;
             }
         }
 
@@ -183,6 +185,18 @@ public class EggJumpPlayer : MonoBehaviour
 
     void OnCollisionEnter2D(Collision2D collision)
     {
+        // Instantly die if touching ANY object/basket near or below the bottom edge of the screen!
+        Camera cam = Camera.main;
+        if (cam != null && !isGravityReversed)
+        {
+            float bottomOfScreen = cam.transform.position.y - cam.orthographicSize + 0.2f;
+            if (transform.position.y < bottomOfScreen)
+            {
+                Lose();
+                return;
+            }
+        }
+
         // Touching a basket or platform
         isGrounded = true;
 

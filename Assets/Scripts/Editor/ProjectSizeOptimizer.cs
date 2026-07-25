@@ -3,7 +3,10 @@ using UnityEditor;
 
 public class ProjectSizeOptimizer : EditorWindow
 {
+    // Option 1: Top menu bar
     [MenuItem("Ragebait Tools/1-Click Optimize Game Size (Mobile)")]
+    // Option 2: Right-click inside Assets folder!
+    [MenuItem("Assets/Optimize Game Size (Mobile)", false, 20)]
     public static void OptimizeProject()
     {
         if (!EditorUtility.DisplayDialog("Optimize Project Size", 
@@ -64,7 +67,7 @@ public class ProjectSizeOptimizer : EditorWindow
                 {
                     androidSettings.overridden = true;
                     androidSettings.maxTextureSize = 1024; // High-def enough for mobile without taking huge MB
-                    androidSettings.format = TextureImporterFormat.ASTC_6x6; // Best balance of quality & minimal size for modern Android
+                    androidSettings.textureCompression = TextureImporterCompression.Compressed; // Auto-selects best mobile compression
                     androidSettings.compressionQuality = 50;
                     importer.SetPlatformTextureSettings(androidSettings);
                     changed = true;
