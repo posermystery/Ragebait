@@ -178,9 +178,7 @@ public class MainMenuManager : MonoBehaviour
         }
         else
         {
-            Debug.Log("No more levels! Restarting from Level 1.");
-            PlayerPrefs.SetInt("UnlockedLevel", 1); // Progression reset karna ho toh ye line chalegi
-            PlayerPrefs.Save();
+            Debug.Log("No more levels! Loading Level 1 without resetting unlocked progress.");
             LoadLevel(1);
         }
     }

@@ -436,6 +436,10 @@ public class GameManager : MonoBehaviour
             {
                 rageMessageText.text = "You literally had to turn the entire world upside down just to get a basketball into an upside-down hoop? Newton is rolling in his grave right now. I bet you looked ridiculous doing that.\n\n(Tap to suffer...)";
             }
+            else if (currentLevelNumber == 10)
+            {
+                rageMessageText.text = "Two open doors and you trusted neither? You intentionally jumped into a death pit and hugged the wall like a paranoid lunatic just to avoid hidden spikes? Congratulations, your trust issues are now officially terminal.\n\n(Tap to continue...)";
+            }
             else
             {
                 rageMessageText.text = "You beat Level " + currentLevelNumber + ". Still doesn't change the fact that you're terrible at this game.\n\n(Tap to continue...)";
