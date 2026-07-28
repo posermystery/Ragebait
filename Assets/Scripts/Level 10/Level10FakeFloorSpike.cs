@@ -13,8 +13,6 @@ public class Level10FakeFloorSpike : MonoBehaviour
     public Transform leftWallSpikes;
     [Tooltip("How far the spikes shoot out to the RIGHT (into the shaft) when triggered")]
     public float spikePopOutDistance = 2.0f;
-    [Tooltip("Delay in seconds after floor disappears before spikes pop out")]
-    public float spikePopDelay = 0.5f;
     [Tooltip("How fast the spikes shoot out")]
     public float spikePopSpeed = 20f;
     [Tooltip("If true, automatically sets the spike object tag to DeathTrap")]
@@ -33,9 +31,16 @@ public class Level10FakeFloorSpike : MonoBehaviour
 
         if (leftWallSpikes != null)
         {
-            if (autoTagAsDeathTrap && !leftWallSpikes.CompareTag("DeathTrap"))
+            if (autoTagAsDeathTrap)
             {
-                leftWallSpikes.tag = "DeathTrap";
+                // Tag the parent
+                if (!leftWallSpikes.CompareTag("DeathTrap")) leftWallSpikes.tag = "DeathTrap";
+                
+                // Tag all children (in case colliders are on child objects!)
+                foreach (Transform child in leftWallSpikes.GetComponentsInChildren<Transform>())
+                {
+                    if (!child.CompareTag("DeathTrap")) child.tag = "DeathTrap";
+                }
             }
             // Spikes on the left wall shoot out towards the RIGHT into the pit shaft
             spikesTargetPos = leftWallSpikes.position + Vector3.right * spikePopOutDistance;
@@ -62,15 +67,9 @@ public class Level10FakeFloorSpike : MonoBehaviour
             if (Level10GateController.areGatesOpen && !isSpikeTriggered && leftWallSpikes != null)
             {
                 isSpikeTriggered = true;
-                StartCoroutine(DelayedSpikePop());
+                StartCoroutine(PopSpikesOut());
             }
         }
-    }
-
-    private IEnumerator DelayedSpikePop()
-    {
-        yield return new WaitForSeconds(spikePopDelay);
-        StartCoroutine(PopSpikesOut());
     }
 
     private IEnumerator PopSpikesOut()

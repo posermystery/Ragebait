@@ -47,6 +47,7 @@ public class GameManager : MonoBehaviour
 
     public bool isGameOver = false;
     public bool isLevelWon = false;
+    private bool canRestart = false;
 
     private int deathCount = 0;
 
@@ -318,6 +319,9 @@ public class GameManager : MonoBehaviour
         // If the game is over (or won), wait for tap/click to restart
         if (isGameOver || isLevelWon)
         {
+            // Only allow restart after our tiny 0.1s frame-bleed protection has finished
+            if (!canRestart) return;
+
             if (Pointer.current != null && Pointer.current.press.wasPressedThisFrame)
             {
                 // Prevent restarting if they clicked the Menu button specifically
@@ -353,6 +357,7 @@ public class GameManager : MonoBehaviour
         if (isGameOver || isLevelWon) return;
 
         isGameOver = true;
+        StartCoroutine(EnableRestartDelay());
 
         // Trigger Camera Shake for impact
         if (cameraController != null)
@@ -384,6 +389,7 @@ public class GameManager : MonoBehaviour
         if (isGameOver || isLevelWon) return;
 
         isLevelWon = true;
+        StartCoroutine(EnableRestartDelay());
 
         // Unlock the next level (only if this is the highest level they've beaten)
         int unlockedLevel = PlayerPrefs.GetInt("UnlockedLevel", 1);
@@ -440,6 +446,10 @@ public class GameManager : MonoBehaviour
             {
                 rageMessageText.text = "Two open doors and you trusted neither? You intentionally jumped into a death pit and hugged the wall like a paranoid lunatic just to avoid hidden spikes? Congratulations, your trust issues are now officially terminal.\n\n(Tap to continue...)";
             }
+            else if (currentLevelNumber == 11)
+            {
+                rageMessageText.text = "You literally just stared at a fake loading screen doing absolutely nothing for 15 seconds. Is this what peak gaming looks like? I'm honestly more disappointed in you for having that much free time.\n\n(Tap to suffer...)";
+            }
             else
             {
                 rageMessageText.text = "You beat Level " + currentLevelNumber + ". Still doesn't change the fact that you're terrible at this game.\n\n(Tap to continue...)";
@@ -455,9 +465,17 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    private void RestartLevel()
+    public void RestartLevel()
     {
-        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+        SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+    }
+
+    private System.Collections.IEnumerator EnableRestartDelay()
+    {
+        // Wait just 0.1 seconds to prevent the exact tap that caused the death from triggering the restart.
+        // It feels instant to the player but prevents input bleeding!
+        yield return new WaitForSeconds(0.1f);
+        canRestart = true;
     }
 
     private void AdjustCameraForMobile()

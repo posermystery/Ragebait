@@ -35,6 +35,7 @@ public class PlayerController : MonoBehaviour
 
     // Radius line
     private LineRenderer radiusLine;
+    private float timeSinceStart = 0f;
 
     void Start()
     {
@@ -81,6 +82,8 @@ public class PlayerController : MonoBehaviour
 
     void Update()
     {
+        timeSinceStart += Time.deltaTime;
+
         if (isOrbiting && currentOrbit != null)
         {
             // Smoothly transition the radius from entry point to the perfect orbit edge
@@ -115,7 +118,8 @@ public class PlayerController : MonoBehaviour
             transform.position = calculatedPos;
 
             // Check for tap/click to jump using the new Input System
-            if (Pointer.current != null && Pointer.current.press.wasPressedThisFrame)
+            // Added timeSinceStart > 0.1f to prevent input bleeding from the tap that restarted the level!
+            if (timeSinceStart > 0.1f && Pointer.current != null && Pointer.current.press.wasPressedThisFrame)
             {
                 if (GameManager.IsPointerOverMenuButton()) return; // Prevent tapping through UI
                 Jump();
@@ -196,6 +200,12 @@ public class PlayerController : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
+        if (collision.CompareTag("DeathTrap"))
+        {
+            Die("Wow, you stepped on a spike. Very original.");
+            return;
+        }
+
         if (!isOrbiting && collision.CompareTag("Orbit"))
         {
             Orbit orbit = collision.GetComponent<Orbit>();
@@ -207,6 +217,14 @@ public class PlayerController : MonoBehaviour
         else if (collision.CompareTag("GoldenOrbit"))
         {
             GameManager.Instance.WinLevel();
+        }
+    }
+
+    private void OnCollisionEnter2D(Collision2D collision)
+    {
+        if (collision.gameObject.CompareTag("DeathTrap"))
+        {
+            Die("Wow, you stepped on a spike. Very original.");
         }
     }
 
