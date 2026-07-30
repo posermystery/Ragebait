@@ -450,6 +450,10 @@ public class GameManager : MonoBehaviour
             {
                 rageMessageText.text = "You literally just stared at a fake loading screen doing absolutely nothing for 15 seconds. Is this what peak gaming looks like? I'm honestly more disappointed in you for having that much free time.\n\n(Tap to suffer...)";
             }
+            else if (currentLevelNumber == 12)
+            {
+                rageMessageText.text = "You literally had to hold the dice down with your bare hands to stop me from cheating? Wow. You must be really fun at casinos. Enjoy your fake victory.\n\n(Tap to continue...)";
+            }
             else
             {
                 rageMessageText.text = "You beat Level " + currentLevelNumber + ". Still doesn't change the fact that you're terrible at this game.\n\n(Tap to continue...)";
