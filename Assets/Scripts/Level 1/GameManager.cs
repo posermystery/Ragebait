@@ -296,7 +296,10 @@ public class GameManager : MonoBehaviour
         img.color = new Color(0.1f, 0.1f, 0.1f, 0.8f); // Dark semi-transparent background
 
         Button btn = btnObj.AddComponent<Button>();
-        btn.onClick.AddListener(() => { SceneManager.LoadScene("MainMenu"); });
+        btn.onClick.AddListener(() => { 
+            if (TransitionManager.Instance != null) TransitionManager.Instance.LoadScene("MainMenu", "MAIN MENU");
+            else SceneManager.LoadScene("MainMenu"); 
+        });
 
         // Create the Text inside the button
         GameObject txtObj = new GameObject("Text");
@@ -332,15 +335,19 @@ public class GameManager : MonoBehaviour
                     // Flow shouldn't break! Go directly to the next level.
                     string nextLevelName = "Level" + (currentLevelNumber + 1);
                     
+                    if (gameOverPanel != null) gameOverPanel.SetActive(false); // Hide the win screen!
+                    
                     // Check if the next level is actually added in Unity Build Settings
                     if (Application.CanStreamedLevelBeLoaded(nextLevelName))
                     {
-                        SceneManager.LoadScene(nextLevelName);
+                        if (TransitionManager.Instance != null) TransitionManager.Instance.LoadLevelWithNumber(nextLevelName, currentLevelNumber + 1, false);
+                        else SceneManager.LoadScene(nextLevelName);
                     }
                     else
                     {
                         // If it's the last level of the game and no next level exists, go to Main Menu
-                        SceneManager.LoadScene("MainMenu");
+                        if (TransitionManager.Instance != null) TransitionManager.Instance.LoadScene("MainMenu", "THANKS FOR PLAYING!");
+                        else SceneManager.LoadScene("MainMenu");
                     }
                 }
                 else

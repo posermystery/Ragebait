@@ -234,7 +234,8 @@ public class MainMenuManager : MonoBehaviour
         string sceneName = "Level" + levelNumber;
         if (Application.CanStreamedLevelBeLoaded(sceneName))
         {
-            SceneManager.LoadScene(sceneName);
+            if (TransitionManager.Instance != null) TransitionManager.Instance.LoadLevelWithNumber(sceneName, levelNumber, false);
+            else SceneManager.LoadScene(sceneName);
         }
         else
         {
