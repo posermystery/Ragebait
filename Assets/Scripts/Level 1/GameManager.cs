@@ -454,6 +454,10 @@ public class GameManager : MonoBehaviour
             {
                 rageMessageText.text = "You literally had to hold the dice down with your bare hands to stop me from cheating? Wow. You must be really fun at casinos. Enjoy your fake victory.\n\n(Tap to continue...)";
             }
+            else if (currentLevelNumber == 13)
+            {
+                rageMessageText.text = "You survived the drunk maze? Your brain must be wired backward anyway. I bet you looked hilarious violently shaking your phone in public though.\n\n(Tap to suffer...)";
+            }
             else
             {
                 rageMessageText.text = "You beat Level " + currentLevelNumber + ". Still doesn't change the fact that you're terrible at this game.\n\n(Tap to continue...)";
