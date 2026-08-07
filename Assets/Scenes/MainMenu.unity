@@ -3459,8 +3459,16 @@ PrefabInstance:
     m_TransformParent: {fileID: 0}
     m_Modifications:
     - target: {fileID: 6463834931644342761, guid: 805604846b3936249aa09fe5e2770086, type: 3}
+      propertyPath: holdDuration
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 6463834931644342761, guid: 805604846b3936249aa09fe5e2770086, type: 3}
+      propertyPath: transitionSpeed
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6463834931644342761, guid: 805604846b3936249aa09fe5e2770086, type: 3}
       propertyPath: levelNames.Array.size
-      value: 13
+      value: 14
       objectReference: {fileID: 0}
     - target: {fileID: 6463834931644342761, guid: 805604846b3936249aa09fe5e2770086, type: 3}
       propertyPath: 'levelNames.Array.data[0]'
@@ -3516,7 +3524,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6463834931644342761, guid: 805604846b3936249aa09fe5e2770086, type: 3}
       propertyPath: 'levelNames.Array.data[13]'
-      value: 
+      value: Lock Smith
       objectReference: {fileID: 0}
     - target: {fileID: 6946996250198902165, guid: 805604846b3936249aa09fe5e2770086, type: 3}
       propertyPath: m_Name
