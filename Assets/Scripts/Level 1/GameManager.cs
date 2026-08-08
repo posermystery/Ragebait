@@ -469,6 +469,10 @@ public class GameManager : MonoBehaviour
             {
                 rageMessageText.text = "You cracked the safe. Did your heart skip a beat when the needle hit warp speed? I bet you tapped the screen so hard you almost broke your phone.\n\n(Tap to suffer...)";
             }
+            else if (currentLevelNumber == 15)
+            {
+                rageMessageText.text = "You actually plugged your real phone into a real charger just to stop some fake digital water from leaking? What's next, blowing on your screen to put out a fire? You're too easily manipulated.\n\n(Tap to suffer...)";
+            }
             else
             {
                 rageMessageText.text = "You beat Level " + currentLevelNumber + ". Still doesn't change the fact that you're terrible at this game.\n\n(Tap to continue...)";
