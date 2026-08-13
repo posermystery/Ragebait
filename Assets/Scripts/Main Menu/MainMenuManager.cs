@@ -74,7 +74,7 @@ public class MainMenuManager : MonoBehaviour
         int deaths = PlayerPrefs.GetInt("DeathCount", 0);
         if (totalDeathCountText != null)
         {
-            totalDeathCountText.text = "TOTAL DEATHS: " + deaths;
+            totalDeathCountText.text = deaths + " deaths by the way";
         }
 
         // 3. Generate the Level Grid (Hidden until Level Select is clicked)
