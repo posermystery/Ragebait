@@ -2,6 +2,14 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 using System.Collections;
+using TMPro;
+
+[System.Serializable]
+public class LevelData
+{
+    public string levelTitle;
+    public Sprite levelThumbnail;
+}
 
 public class MainMenuManager : MonoBehaviour
 {
@@ -15,11 +23,11 @@ public class MainMenuManager : MonoBehaviour
     public Text totalDeathCountText;
     
     [Header("Settings / Taunt")]
-    public Text settingsTauntText;
+    public TextMeshProUGUI settingsTauntText;
     [TextArea] public string tauntMessage = "Adjust Difficulty? Hah! What did you think this was, a fair game? Deal with it or quit.";
 
     [Header("Game Info")]
-    public Text gameInfoText;
+    public TextMeshProUGUI gameInfoText;
 
     [Header("Audio (Drag n Drop SFX here)")]
     public AudioClip clickSound;
@@ -38,12 +46,16 @@ public class MainMenuManager : MonoBehaviour
     public Button gameInfoBackButton;
 
     [Header("Dynamic Grid Settings")]
-    public GameObject levelButtonPrefab; // The button template to spawn
-    public Transform levelGridParent;    // The Content object of the Scroll View
-    public int totalLevels = 30;         // Total levels in your game
-    public Sprite lockSprite;            // Assign your custom lock sprite here
+    public GameObject levelButtonPrefab; // The Level Card prefab
+    public Transform levelGridParent;    
+    public int totalLevels = 30;         
+    
+    [Header("Level Card Data")]
+    public LevelData[] levelDataList;    // Assign level names and thumbnails here in Inspector
+    public Sprite lockSprite;            
+    public Sprite completedStarSprite;   
     [Range(0.1f, 1.5f)]
-    public float lockSpriteScale = 0.85f; // Scale of the lock sprite relative to button
+    public float lockSpriteScale = 0.85f;
 
     void Start()
     {
@@ -108,55 +120,63 @@ public class MainMenuManager : MonoBehaviour
     private void GenerateLevelGrid()
     {
         int unlockedLevel = PlayerPrefs.GetInt("UnlockedLevel", 1);
+        
+        // Check if player has finished the game/all levels. We can use a special PlayerPref for this if needed, 
+        // but for now we'll assume a level is "Completed" if its index is strictly less than unlockedLevel.
 
         for (int i = 1; i <= totalLevels; i++)
         {
             GameObject newBtnObj = Instantiate(levelButtonPrefab, levelGridParent);
-            Text btnText = newBtnObj.GetComponentInChildren<Text>();
-            
-            if (btnText != null) btnText.text = i.ToString();
-
-            int levelNum = i; // Capture variable for closure
+            int levelNum = i;
             Button btn = newBtnObj.GetComponent<Button>();
+
+            // Try to find the specific UI parts inside the Prefab by name
+            Transform thumbTransform = newBtnObj.transform.Find("Thumbnail");
+            Transform titleTransform = newBtnObj.transform.Find("TitleText");
+            Transform statusTransform = newBtnObj.transform.Find("StatusText");
+            Transform iconTransform = newBtnObj.transform.Find("StatusIcon");
+
+            Image thumbImg = thumbTransform != null ? thumbTransform.GetComponent<Image>() : null;
+            TextMeshProUGUI titleText = titleTransform != null ? titleTransform.GetComponent<TextMeshProUGUI>() : null;
+            TextMeshProUGUI statusText = statusTransform != null ? statusTransform.GetComponent<TextMeshProUGUI>() : null;
+            Image statusIcon = iconTransform != null ? iconTransform.GetComponent<Image>() : null;
+
+            // Apply Level Data (if we entered it in the inspector)
+            string defaultTitle = (i < 10 ? "0" + i : i.ToString()) + ": UNKNOWN";
+            if (levelDataList != null && i - 1 < levelDataList.Length)
+            {
+                if (titleText != null) titleText.text = (i < 10 ? "0" + i : i.ToString()) + ": " + levelDataList[i - 1].levelTitle;
+                if (thumbImg != null && levelDataList[i - 1].levelThumbnail != null) thumbImg.sprite = levelDataList[i - 1].levelThumbnail;
+            }
+            else
+            {
+                if (titleText != null) titleText.text = defaultTitle;
+            }
+
             if (btn != null)
             {
-                if (i <= unlockedLevel)
+                if (i <= unlockedLevel) // UNLOCKED (or previously completed)
                 {
                     btn.interactable = true;
-                    // Assign click event for level load and sound
                     btn.onClick.AddListener(() => LoadLevel(levelNum));
                     btn.onClick.AddListener(PlayClickSound);
+
+                    if (statusText != null) { statusText.text = "Unlocked"; statusText.color = Color.white; }
+                    if (statusIcon != null) { statusIcon.gameObject.SetActive(false); } // No icon, just text
                 }
-                else
+                else // LOCKED
                 {
-                    btn.interactable = false; 
-                    if (btnText != null) btnText.text = ""; // Hide the number text
+                    btn.interactable = false;
                     
-                    // Add lock sprite image on top
-                    if (lockSprite != null)
-                    {
-                        GameObject lockImgObj = new GameObject("LockIcon");
-                        lockImgObj.transform.SetParent(newBtnObj.transform, false);
-                        Image lockImg = lockImgObj.AddComponent<Image>();
-                        lockImg.sprite = lockSprite;
-                        lockImg.preserveAspect = true;
-                        
-                        RectTransform rt = lockImgObj.GetComponent<RectTransform>();
-                        rt.anchorMin = new Vector2(0.5f, 0.5f);
-                        rt.anchorMax = new Vector2(0.5f, 0.5f);
-                        rt.pivot = new Vector2(0.5f, 0.5f);
-                        rt.anchoredPosition = Vector2.zero;
-                        
-                        // Set size relative to the button using the scale variable
-                        RectTransform btnRect = newBtnObj.GetComponent<RectTransform>();
-                        if (btnRect != null)
-                        {
-                            rt.sizeDelta = new Vector2(btnRect.sizeDelta.x * lockSpriteScale, btnRect.sizeDelta.y * lockSpriteScale);
-                        }
-                        else
-                        {
-                            rt.sizeDelta = new Vector2(80, 80);
-                        }
+                    if (statusText != null) { statusText.text = "Locked"; statusText.color = Color.red; }
+                    
+                    // Dim the thumbnail for locked levels
+                    if (thumbImg != null) thumbImg.color = new Color(0.3f, 0.3f, 0.3f, 1f); 
+
+                    if (statusIcon != null && lockSprite != null) 
+                    { 
+                        statusIcon.gameObject.SetActive(true); 
+                        statusIcon.sprite = lockSprite; 
                     }
                 }
             }
