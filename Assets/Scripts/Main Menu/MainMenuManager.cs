@@ -59,6 +59,13 @@ public class MainMenuManager : MonoBehaviour
 
     void Start()
     {
+        // 🚀 MOBILE OPTIMIZATION 🚀
+        // Unlock FPS to 60 for buttery smooth gameplay (Unity defaults to 30 on mobile)
+        Application.targetFrameRate = 60;
+        
+        // Prevent screen from dimming/sleeping while they are raging
+        Screen.sleepTimeout = SleepTimeout.NeverSleep;
+
         // Setup AudioSource automatically
         audioSource = GetComponent<AudioSource>();
         if (audioSource == null)
@@ -104,16 +111,15 @@ public class MainMenuManager : MonoBehaviour
         {
             cg = mainMenuPanel.GetComponent<CanvasGroup>();
             if (cg == null) cg = mainMenuPanel.AddComponent<CanvasGroup>();
-            cg.blocksRaycasts = false; // Disable clicks
-            cg.interactable = false;
+            cg.blocksRaycasts = false; // Disable clicks but don't change visual interactable state
         }
 
-        yield return new WaitForSeconds(0.3f);
+        // Use Realtime so it doesn't break if timeScale is 0
+        yield return new WaitForSecondsRealtime(0.1f);
 
         if (cg != null)
         {
             cg.blocksRaycasts = true; // Re-enable clicks
-            cg.interactable = true;
         }
     }
 

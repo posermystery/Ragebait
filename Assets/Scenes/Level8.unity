@@ -1091,7 +1091,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b0b9e20bf0cb02c41bb28af3f02280fc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::BackgroundMusic
-  sceneMusic: {fileID: 8300000, guid: e8a46b2f6082a2e4b830b7b355dcf6fa, type: 3}
+  sceneMusic: {fileID: 8300000, guid: 0dd59b5a44ce3ac45a972512887369f5, type: 3}
 --- !u!82 &630768095
 AudioSource:
   m_ObjectHideFlags: 0

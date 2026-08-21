@@ -583,7 +583,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b0b9e20bf0cb02c41bb28af3f02280fc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::BackgroundMusic
-  sceneMusic: {fileID: 8300000, guid: e8a46b2f6082a2e4b830b7b355dcf6fa, type: 3}
+  sceneMusic: {fileID: 8300000, guid: 0dd59b5a44ce3ac45a972512887369f5, type: 3}
 --- !u!82 &454128676
 AudioSource:
   m_ObjectHideFlags: 0
@@ -1406,8 +1406,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 921.75226, y: -191.93652}
-  m_SizeDelta: {x: 123.987915, y: 88.09668}
+  m_AnchoredPosition: {x: 927.69226, y: -191.76923}
+  m_SizeDelta: {x: 129.23077, y: 92.30769}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1083908830
 MonoBehaviour:
@@ -1684,8 +1684,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 469.84894, y: -191.93652}
-  m_SizeDelta: {x: 747.1903, y: 88.09668}
+  m_AnchoredPosition: {x: 466.15384, y: -191.76923}
+  m_SizeDelta: {x: 756.9231, y: 92.30769}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1512284871
 MonoBehaviour:
@@ -1779,8 +1779,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 851.6012, y: -191.93652}
-  m_SizeDelta: {x: 16.3142, y: 88.09668}
+  m_AnchoredPosition: {x: 853.8461, y: -191.76923}
+  m_SizeDelta: {x: 18.461538, y: 92.30769}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1654717084
 MonoBehaviour:
