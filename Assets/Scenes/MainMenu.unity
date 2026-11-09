@@ -1318,7 +1318,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6946996250198902165, guid: 805604846b3936249aa09fe5e2770086, type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 8526439029447214595, guid: 805604846b3936249aa09fe5e2770086, type: 3}
       propertyPath: m_Pivot.x
@@ -1859,7 +1859,11 @@ MonoBehaviour:
         m_SelectedSource:
           rid: -2
         m_Provider2DCache:
-          rid: -2
+          rid: 7805741306857390080
+    - rid: 7805741306857390080
+      type: {class: 'Provider2DCache`1[[UnityEngine.Rendering.Universal.Light2DProvider, Unity.RenderPipelines.Universal.2D.Runtime]]', ns: UnityEngine.Rendering.Universal, asm: Unity.RenderPipelines.Universal.2D.Runtime}
+      data:
+        m_Cache: []
 --- !u!4 &619394802
 Transform:
   m_ObjectHideFlags: 0
@@ -3605,7 +3609,7 @@ MonoBehaviour:
   gameInfoBackButton: {fileID: 339048989}
   levelButtonPrefab: {fileID: 8403038614581165925, guid: cbebd3f0ad8ad4148897295d1c044bb1, type: 3}
   levelGridParent: {fileID: 1469432037}
-  totalLevels: 15
+  totalLevels: 14
   levelDataList:
   - levelTitle: Orbit Jumper
     levelThumbnail: {fileID: 21300000, guid: 101eaedcde561fc4a944d40f002cd6ac, type: 3}

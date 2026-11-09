@@ -12,7 +12,7 @@ PlayerSettings:
   targetDevice: 2
   useOnDemandResources: 0
   accelerometerFrequency: 60
-  companyName: DefaultCompany
+  companyName: uaresoft
   productName: Ragebait!
   defaultCursor: {fileID: 0}
   cursorHotspot: {x: 0, y: 0}
@@ -170,6 +170,7 @@ PlayerSettings:
   androidMaxAspectRatio: 2.4
   androidMinAspectRatio: 1
   applicationIdentifier:
+    Android: com.uaresoft.ragebait
     Standalone: com.DefaultCompany.2D-URP
   buildNumber:
     Standalone: 0
@@ -273,8 +274,8 @@ PlayerSettings:
   AndroidTargetArchitectures: 2
   AndroidSplashScreenScale: 0
   androidSplashScreen: {fileID: 0}
-  AndroidKeystoreName: 
-  AndroidKeyaliasName: 
+  AndroidKeystoreName: D:/uaresoft_release.keystore
+  AndroidKeyaliasName: ragebait
   AndroidEnableArmv9SecurityFeatures: 0
   AndroidEnableArm64MTE: 0
   AndroidBuildApkPerCpuArchitecture: 0
@@ -286,7 +287,7 @@ PlayerSettings:
   AndroidEnableTango: 0
   androidEnableBanner: 1
   androidUseLowAccuracyLocation: 0
-  androidUseCustomKeystore: 0
+  androidUseCustomKeystore: 1
   m_AndroidBanners:
   - width: 320
     height: 180
@@ -298,7 +299,14 @@ PlayerSettings:
   AndroidAppBundleSizeToValidate: 150
   AndroidReportGooglePlayAppDependencies: 1
   androidSymbolsSizeThreshold: 800
-  m_BuildTargetIcons: []
+  m_BuildTargetIcons:
+  - m_BuildTarget: 
+    m_Icons:
+    - serializedVersion: 2
+      m_Icon: {fileID: 2800000, guid: a8699457f5f4d0e4a827f424da22b63c, type: 3}
+      m_Width: 128
+      m_Height: 128
+      m_Kind: 0
   m_BuildTargetPlatformIcons:
   - m_BuildTarget: Android
     m_Icons:
@@ -364,7 +372,7 @@ PlayerSettings:
       m_SubKind: 
     - m_Textures:
       - {fileID: 10305, guid: 0000000000000000f000000000000000, type: 0}
-      - {fileID: 2800000, guid: ada4e45964ed61f498a1328a9cb98069, type: 3}
+      - {fileID: 2800000, guid: a8699457f5f4d0e4a827f424da22b63c, type: 3}
       m_Width: 432
       m_Height: 432
       m_Kind: 2
@@ -694,11 +702,12 @@ PlayerSettings:
   scriptingBackend:
     Android: 1
   il2cppCompilerConfiguration: {}
-  il2cppCodeGeneration: {}
+  il2cppCodeGeneration:
+    Android: 1
   il2cppLTOMode: {}
   il2cppStacktraceInformation: {}
   managedStrippingLevel:
-    Android: 2
+    Android: 3
   incrementalIl2cppBuild: {}
   suppressCommonWarnings: 1
   allowUnsafeCode: 0
